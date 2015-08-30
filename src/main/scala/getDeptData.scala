@@ -4,16 +4,26 @@
 
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{Row, DataFrame}
-import org.apache.spark.sql.types.{StringType, IntegerType, StructField, StructType}
+import org.apache.spark.sql.types.{StringType, IntegerType, StructType}
 
-object getDeptData {
+class getDeptData {
   private val deptData = "department.csv"
-  private val schema = StructType(
-     StructField("deptId",IntegerType,false) ::
-     StructField("department",StringType,false) ::Nil
-  )
+
+  private def createSchema : StructType ={
+    val cs = new CreateSchema
+    cs.addField("deptId",IntegerType,false)
+    cs.addField("department",StringType,false)
+    cs.getSchema
+  }
+
+  private def makeRow = (x : Array[String]) => {
+    Row(x(0).toInt,
+        x(1))
+  }
+
   def getData (sc : SparkContext) : DataFrame = {
-    val deptRdd = sc.textFile(deptData).map(_.split(",")).map(x=>Row(x(0).toInt,x(1)))
+    val deptRdd = sc.textFile(deptData).map(_.split(",")).map(makeRow)
+    val schema = createSchema
     createSparkContext.getHiveContext.createDataFrame(deptRdd,schema)
   }
 }
