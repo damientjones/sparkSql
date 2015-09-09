@@ -1,9 +1,6 @@
 package Util
 
 /**
- * Created by damien on 9/9/2015.
- */
-/**
  * Created by damien on 8/19/2015.
  * Change logging level to errors only
  * Create a spark context using 4 threads with Spark App as the name
