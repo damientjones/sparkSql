@@ -13,7 +13,7 @@ import org.apache.spark.sql.hive.HiveContext
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.log4j.{Level, Logger}
 
-object createSparkContext {
+object CreateSparkContext {
   /** Need to share one Hive context across all operations otherwise
   * Spark will throw failures because only one context can connect
   * to Derby */
@@ -26,14 +26,14 @@ object createSparkContext {
     val appName : String = "Spark App"
     val master : String = "local[4]"
     /* returns spark context object */
-      new SparkContext(new SparkConf().setAppName(appName).setMaster(master))
+    new SparkContext(new SparkConf().setAppName(appName).setMaster(master))
   }
 
-  def createHiveContext(sc:SparkContext) = {
+  def createHiveContext(sc:SparkContext) {
       hc = new HiveContext(sc)
-    }
+  }
 
-  def getHiveContext = {
+  def getHiveContext : HiveContext = {
       hc
-    }
+  }
 }
