@@ -1,12 +1,15 @@
+package Data
+
 /**
  * Created by damien on 8/19/2015.
  */
 
+import Util.{CreateSchema, CreateSparkContext}
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.{Row, DataFrame}
-import org.apache.spark.sql.types.{StringType, IntegerType, StructType}
+import org.apache.spark.sql.types.{IntegerType, StringType, StructType}
+import org.apache.spark.sql.{DataFrame, Row}
 
-class getDeptData {
+class DeptData {
   private val deptData = "department.csv"
 
   private def createSchema : StructType ={
@@ -24,6 +27,6 @@ class getDeptData {
   def getData (sc : SparkContext) : DataFrame = {
     val deptRdd = sc.textFile(deptData).map(_.split(",")).map(makeRow)
     val schema = createSchema
-    createSparkContext.getHiveContext.createDataFrame(deptRdd,schema)
+    CreateSparkContext.getHiveContext.createDataFrame(deptRdd,schema)
   }
 }

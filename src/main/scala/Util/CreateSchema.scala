@@ -1,7 +1,10 @@
+package Util
+
 /**
  * Created by damien on 8/29/2015.
  */
-import org.apache.spark.sql.types.{StructField, StructType,DataType}
+import org.apache.spark.sql.types.{DataType, StructField, StructType}
+
 import scala.collection.mutable.ArrayBuffer
 class CreateSchema {
   private var schema = ArrayBuffer.empty[StructField]

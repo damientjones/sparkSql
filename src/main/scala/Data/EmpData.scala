@@ -1,12 +1,15 @@
+package Data
+
 /**
  * Created by damien on 8/19/2015.
  */
 
+import Util.{CreateSchema, CreateSparkContext, DateFormatter}
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.{Row, DataFrame}
-import org.apache.spark.sql.types.{StringType, IntegerType, StructField, StructType}
+import org.apache.spark.sql.types.{DateType, IntegerType, StringType, StructType}
+import org.apache.spark.sql.{DataFrame, Row}
 
-class getEmpData {
+class EmpData {
   private val empData = "employee.csv"
 
   private def createSchema : StructType ={
@@ -15,6 +18,7 @@ class getEmpData {
     cs.addField("lastName",StringType,false)
     cs.addField("deptId",IntegerType,false)
     cs.addField("salary",IntegerType,false)
+    cs.addField("hireDate",DateType,false)
     cs.getSchema
   }
 
@@ -22,12 +26,13 @@ class getEmpData {
     Row(x(0),
         x(1),
         x(2).toInt,
-        x(3).toInt)
+        x(3).toInt,
+        DateFormatter.formatDate(x(4)))
   }
 
   def getData (sc : SparkContext) : DataFrame = {
     val empRdd = sc.textFile(empData).map(_.split(",")).map(makeRow)
     val schema = createSchema
-    createSparkContext.getHiveContext.createDataFrame(empRdd,schema)
+    CreateSparkContext.getHiveContext.createDataFrame(empRdd,schema)
   }
 }
