@@ -2,18 +2,19 @@ package Util
 
 /**
  * Created by damien on 8/29/2015.
+ * Created as a trait so that any class can use it
  */
 import org.apache.spark.sql.types.{DataType, StructField, StructType}
-
 import scala.collection.mutable.ArrayBuffer
-class CreateSchema {
+
+trait CreateSchema {
   private var schema = ArrayBuffer.empty[StructField]
 
-  def addField (fieldName:String,fieldType:DataType,nullable:Boolean) {
+  protected def addField (fieldName:String,fieldType:DataType,nullable:Boolean) {
     schema += StructField(fieldName,fieldType,nullable)
   }
 
-  def getSchema : StructType = {
+  protected def getSchema : StructType = {
     StructType(schema)
   }
 }
