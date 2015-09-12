@@ -10,12 +10,12 @@ import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 
 class ExecuteSparkSql {
-  private val sc = CreateSparkContext.createContext
+  CreateSparkContext.createContext
+  private val sc = CreateSparkContext.getSparkContext
   private val ed = new EmpData(sc)
   private val dd = new DeptData(sc)
 
   def main = {
-    CreateSparkContext.createHiveContext(sc)
     val hc = CreateSparkContext.getHiveContext
     val empDf=ed.getData
     val deptDf=dd.getData
@@ -28,6 +28,8 @@ class ExecuteSparkSql {
     println(empDeptDf.groupBy("department").sum("salary").show)
     println(empDeptDf.groupBy("department").agg(max("salary"),avg("salary")).show)
     println(empDeptDf.orderBy("department").show)
-    empDeptDf.toJSON
+    val a = empDeptDf.toJSON.collect
+    sc.stop
+    a
   }
 }

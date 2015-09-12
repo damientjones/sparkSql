@@ -14,23 +14,27 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.log4j.{Level, Logger}
 
 object CreateSparkContext {
+  val level = Level.ERROR
+  Logger.getLogger("org").setLevel(level)
+  Logger.getLogger("akka").setLevel(level)
   /** Need to share one Hive context across all operations otherwise
   * Spark will throw failures because only one context can connect
   * to Derby */
-  var hc : HiveContext = _
+  private var hc : HiveContext = _
+  private var sc : SparkContext = _
 
-  def createContext : SparkContext = {
-    val level = Level.ERROR
-    Logger.getLogger("org").setLevel(level)
-    Logger.getLogger("akka").setLevel(level)
-    val appName : String = "Spark App"
-    val master : String = "local[4]"
-    /* returns spark context object */
-    new SparkContext(new SparkConf().setAppName(appName).setMaster(master))
+  def createContext  {
+    if (sc==null) {
+      val appName: String = "Spark App"
+      val master: String = "local[4]"
+      /* returns spark context object */
+      sc = new SparkContext(new SparkConf().setAppName(appName).setMaster(master))
+      hc = new HiveContext(sc)
+    }
   }
 
-  def createHiveContext(sc:SparkContext) {
-      hc = new HiveContext(sc)
+  def getSparkContext : SparkContext = {
+    sc
   }
 
   def getHiveContext : HiveContext = {
